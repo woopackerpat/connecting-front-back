@@ -1,4 +1,5 @@
 import { createContext, useState, useEffect } from "react";
+import { getAllTodo, createNewTodo } from "../api/todo";
 import axios from "../components/config/axios";
 
 const TodoContext = createContext();
@@ -7,24 +8,21 @@ function TodoContextProvider(props) {
   const [todoList, setTodoList] = useState([]);
 
   useEffect(() => {
-    axios
-      .get("/todos")
-      .then((res) => {
-        setTodoList(res.data.todos);
+    const todos = getAllTodo();
+    todos
+      .then((result) => {
+        setTodoList(result);
       })
       .catch((err) => {
         console.log(err);
       });
+    // setTodoList(todos)
   }, []);
 
   const createTodo = (title) => {
-    axios
-      .post(
-        "/todos",
-        { title, completed: false }
-      )
-      .then((res) => {
-        const newTodo = res.data.todo;
+    const todo = createNewTodo(title);
+    todo
+      .then((newTodo) => {
         const newTodoList = [newTodo, ...todoList];
         setTodoList(newTodoList);
       })
